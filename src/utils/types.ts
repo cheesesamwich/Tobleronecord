@@ -58,6 +58,13 @@ export interface Plugin extends PluginDef {
     isDependency?: boolean;
 }
 
+export enum UserPlatform
+{
+    web,
+    linux,
+    macos,
+    windows
+}
 export interface PluginDef {
     name: string;
     description: string;
@@ -127,6 +134,7 @@ export interface PluginDef {
     toolboxActions?: Record<string, () => void>;
 
     tags?: string[];
+    platform?(userPlatform : UserPlatform): boolean 
 }
 
 export const enum StartAt {

@@ -16,15 +16,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { existsSync } from "fs";
+
 /**
  * @param {string} filePath
  * @returns {string | null}
  */
-export function getPluginTarget(filePath) {
-    const pathParts = filePath.split(/[/\\]/);
-    if (/^index\.tsx?$/.test(pathParts.at(-1))) pathParts.pop();
 
-    const identifier = pathParts.at(-1).replace(/\.tsx?$/, "");
-    const identiferBits = identifier.split(".");
-    return identiferBits.length === 1 ? null : identiferBits.at(-1);
+
+
+function mapProcessPlatform(platform) 
+{
+    switch (platform) {
+        case 'linux':
+            return UserPlatform.linux;
+        case 'darwin':
+            return UserPlatform.macos;
+        case 'win32':
+            return UserPlatform.windows;
+        default:
+            return UserPlatform.web;
+    }
+}
+
+export function getPluginTarget(path, web) {
+    if(path.includes("_")) { return true; }
+    if(!existsSync(path))
+    {
+        return false;
+    }
+    let plugin = import(path);
+    if(!Object.hasOwn(plugin, "platform"))
+    {
+        return true;
+    }
+    return plugin.platform(web ? UserPlatform.web : mapProcessPlatform(process.platform));
 }

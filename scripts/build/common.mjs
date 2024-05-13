@@ -67,9 +67,8 @@ export const makeAllPackagesExternalPlugin = {
     },
 };
 
-/**
- * @type {(kind: "web" | "discordDesktop" | "vencordDesktop") => import("esbuild").Plugin}
- */
+
+
 export const globPlugins = kind => ({
     name: "glob-plugins",
     setup: build => {
@@ -91,21 +90,23 @@ export const globPlugins = kind => ({
                 const files = await readdir(`./src/${dir}`);
                 for (const file of files) {
                     if (file.startsWith("_") || file.startsWith(".")) continue;
-                    if (file === "index.ts") continue;
+                    if (file === "index.ts") { continue;}
+                    
+                    console.log(file);
 
-                    const target = getPluginTarget(file);
-                    if (target) {
-                        if (target === "dev" && !watch) continue;
-                        if (target === "web" && kind === "discordDesktop") continue;
-                        if (target === "desktop" && kind === "web") continue;
-                        if (target === "discordDesktop" && kind !== "discordDesktop") continue;
-                        if (target === "vencordDesktop" && kind !== "vencordDesktop") continue;
-                    }
-
+                    let path = `./src/${dir}/${file}`;
+                    console.log(dir);
+                    console.log(file);
+                    console.log(`Checking ${path}`);
+                    const target = await getPluginTarget(path, kind == "web");
+                    console.log(target);
+                    if (!target) continue;
+                
                     const mod = `p${i}`;
                     code += `import ${mod} from "./${dir}/${file.replace(/\.tsx?$/, "")}";\n`;
                     plugins += `[${mod}.name]:${mod},\n`;
                     i++;
+                    console.log(`Finished processing ${file}\n`)
                 }
             }
             code += `export default {${plugins}};`;
