@@ -197,7 +197,7 @@ ${makeCodeblock(enabledPlugins.join(", "))}
 
             if(knownIssueInMessage)
             {
-                let alert = `Chances are, its already fixed- ${knownIssueInMessage.githubIssue ? `To learn how/when this will be fixed, check out the github issue page at ${knownIssueInMessage.githubIssue}` : ""}`;
+                let alert = `Chances are, its already fixed or being worked on`;
                 Alerts.show({
                     title: "Hold up!",
                     body: <div>
@@ -205,6 +205,11 @@ ${makeCodeblock(enabledPlugins.join(", "))}
                         <Forms.FormText className={Margins.top8}>
                             {alert}
                         </Forms.FormText>
+                        <Forms.FormDivider/>
+                        <Forms.FormSection>
+                            <Forms.FormTitle tag="h3">{knownIssueInMessage.title}</Forms.FormTitle>
+                            <Forms.FormText>{knownIssueInMessage.description}</Forms.FormText>
+                        </Forms.FormSection>
                     </div>
                 });
             }

@@ -1,9 +1,8 @@
 [
     {
-      "title": "Skibidi",
-      "description": "skibid toil e",
-      "githubIssue": "help i dont know what fucking link to put here this is just a test object",
-      "tags": ["skibidi", "toilet"]
+        "title": "App Unload",
+        "description": "App unloading when it's in the background for a while (no notifications, vc disconnect, etc) ~ stock discord issue (https://www.reddit.com/r/discordapp/comments/1buyl5o/comment/l1l6nc8/)",
+        "tags": ["unload", "blank", "gray", "grey", "tab out"]
     }
-  ]
+]
   
