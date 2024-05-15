@@ -27,6 +27,7 @@ import { makeCodeblock } from "@utils/text";
 import definePlugin from "@utils/types";
 import { isOutdated, update } from "@utils/updater";
 import { Alerts, Card, ChannelStore, Forms, GuildMemberStore, NavigationRouter, Parser, RelationshipStore, UserStore } from "@webpack/common";
+import { Message } from "discord-types/general";
 
 import gitHash from "~git-hash";
 import plugins from "~plugins";
@@ -39,6 +40,7 @@ const AllowedChannelIds = [
     SUPPORT_CHANNEL_ID,
     "1024286218801926184", // Vencord > #bot-spam
     "1033680203433660458", // Vencord > #v
+    "1207007540307828816"
 ];
 
 const TrustedRolesIds = [
@@ -46,6 +48,14 @@ const TrustedRolesIds = [
     "1026504932959977532", // regular
     "1042507929485586532", // donor
 ];
+
+interface knownIssue
+{
+    title: string,
+    description: string,
+    githubIssue: string,
+    tags: string[];
+}
 
 export default definePlugin({
     name: "SupportHelper",
@@ -61,7 +71,6 @@ export default definePlugin({
             replace: "$& $self.ContributorDmWarningCard({ userId: $1 }),"
         }
     }],
-
     commands: [{
         name: "vencord-debug",
         description: "Send Vencord Debug info",
@@ -167,6 +176,18 @@ ${makeCodeblock(enabledPlugins.join(", "))}
                     onCloseCallback: () => setTimeout(() => NavigationRouter.back(), 50)
                 });
             }
+        },
+        MESSAGE_CREATE({ optimistic, type, message, channelId })
+        {
+            let messageData : Message = message;
+
+            if (optimistic || type !== "MESSAGE_CREATE") return;
+            if (messageData.state === "SENDING") return;
+            if(!messageData.content) return;
+            if(messageData.author.id != UserStore.getCurrentUser().id) return;
+            let messageContent : string = messageData.content;
+
+            
         }
     },
 
