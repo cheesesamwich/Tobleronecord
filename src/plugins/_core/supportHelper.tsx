@@ -53,7 +53,7 @@ interface knownIssue
 {
     title: string,
     description: string,
-    githubIssue: string,
+    githubIssue?: string,
     tags: string[];
 }
 
@@ -179,6 +179,7 @@ ${makeCodeblock(enabledPlugins.join(", "))}
         },
         async MESSAGE_CREATE({ optimistic, type, message, channelId })
         {
+            
             let messageData : Message = message;
 
             if (optimistic || type !== "MESSAGE_CREATE") return;
@@ -186,16 +187,28 @@ ${makeCodeblock(enabledPlugins.join(", "))}
             if(!messageData.content) return;
             if(messageData.author.id != UserStore.getCurrentUser().id) return;
 
-            let messageContent : string = messageData.content;
+            console.log("skibiding");
 
-            let issues : knownIssue[] = await fetch("https://raw.githubusercontent.com/cheesesamwich/Tobleronecord/support-fuckery/issues.json").then(async (content) => await content.json());
+            let messageContent : string = messageData.content.toLowerCase();
 
-            let knownIssueInMessage = issues.find((issue) => issue.tags.find((tag) => messageContent.includes(tag)));
+            let issues : knownIssue[] = await (await fetch("https://raw.githubusercontent.com/cheesesamwich/Tobleronecord/support-fuckery-2/issues.json")).json();
+
+            let knownIssueInMessage = issues.find((issue) => issue.tags.some((tag) => messageContent.includes(tag)));
 
             if(knownIssueInMessage)
             {
-                console.log(`Your message contains a striking similarity to a known issue! (Based on the tags "${knownIssueInMessage.tags.join(", ") + ", and " + knownIssueInMessage.tags.pop()}")`)
+                let alert = `Chances are, its already fixed- ${knownIssueInMessage.githubIssue ? `To learn how/when this will be fixed, check out the github issue page at ${knownIssueInMessage.githubIssue}` : ""}`;
+                Alerts.show({
+                    title: "Hold up!",
+                    body: <div>
+                        <Forms.FormText>Your message is similar to a known issue! </Forms.FormText>
+                        <Forms.FormText className={Margins.top8}>
+                            {alert}
+                        </Forms.FormText>
+                    </div>
+                });
             }
+            
         }
     },
 
