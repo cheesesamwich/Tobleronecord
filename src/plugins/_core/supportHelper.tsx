@@ -177,7 +177,7 @@ ${makeCodeblock(enabledPlugins.join(", "))}
                 });
             }
         },
-        MESSAGE_CREATE({ optimistic, type, message, channelId })
+        async MESSAGE_CREATE({ optimistic, type, message, channelId })
         {
             let messageData : Message = message;
 
@@ -185,9 +185,17 @@ ${makeCodeblock(enabledPlugins.join(", "))}
             if (messageData.state === "SENDING") return;
             if(!messageData.content) return;
             if(messageData.author.id != UserStore.getCurrentUser().id) return;
+
             let messageContent : string = messageData.content;
 
-            
+            let issues : knownIssue[] = await fetch("https://raw.githubusercontent.com/cheesesamwich/Tobleronecord/support-fuckery/issues.json").then(async (content) => await content.json());
+
+            let knownIssueInMessage = issues.find((issue) => issue.tags.find((tag) => messageContent.includes(tag)));
+
+            if(knownIssueInMessage)
+            {
+                console.log(`Your message contains a striking similarity to a known issue! (Based on the tags "${knownIssueInMessage.tags.join(", ") + ", and " + knownIssueInMessage.tags.pop()}")`)
+            }
         }
     },
 
