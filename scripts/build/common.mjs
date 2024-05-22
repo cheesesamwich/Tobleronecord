@@ -93,14 +93,23 @@ export const globPlugins = kind => ({
                     if (file.startsWith("_") || file.startsWith(".")) continue;
                     if (file === "index.ts") continue;
 
-                    const target = getPluginTarget(file);
-                    if (target) {
-                        if (target === "dev" && !watch) continue;
-                        if (target === "web" && kind === "discordDesktop") continue;
-                        if (target === "desktop" && kind === "web") continue;
-                        if (target === "discordDesktop" && kind !== "discordDesktop") continue;
-                        if (target === "vencordDesktop" && kind !== "vencordDesktop") continue;
-                    }
+                    let prefix = `${dir}/`
+
+                    let ammendedFileName = async () =>
+                    {
+                        if(file.includes(".") && file.includes("ts"))
+                        {
+                            return file;
+                        }
+                        else
+                        {
+                            return `/${file}`
+                        }
+                    };
+
+                    let fullFilePrefix = join(prefix, await ammendedFileName());
+                    const target = await getPluginTarget(file, fullFilePrefix);
+                    if(!target) continue;
 
                     const mod = `p${i}`;
                     code += `import ${mod} from "./${dir}/${file.replace(/\.tsx?$/, "")}";\n`;

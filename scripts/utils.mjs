@@ -20,11 +20,37 @@
  * @param {string} filePath
  * @returns {string | null}
  */
-export function getPluginTarget(filePath) {
-    const pathParts = filePath.split(/[/\\]/);
-    if (/^index\.tsx?$/.test(pathParts.at(-1))) pathParts.pop();
 
-    const identifier = pathParts.at(-1).replace(/\.tsx?$/, "");
-    const identiferBits = identifier.split(".");
-    return identiferBits.length === 1 ? null : identiferBits.at(-1);
+export async function getPluginTarget(filePath, fullFilePrefix) 
+{
+    console.log(`PLEASE KILL ME (also ${fullFilePrefix})`)
+    if(fullFilePrefix.includes("_")) return true;
+    console.log(fullFilePrefix);
+    console.log(filePath);
+
+    console.log(`/${fullFilePrefix}`);
+    let plugin = await import(`../src/${fullFilePrefix}/index.tsx`);
+    if(plugin.hasOwnProperty("platform"))
+    {
+        return plugin.platform(mapProcessPlatform());
+    }
+    else
+    {
+        console.log("Plugin does not have platform object, returning true");
+    }
+}
+
+function mapProcessPlatform() 
+{
+    let platform = process.platform;
+    switch (platform) {
+        case 'linux':
+            return UserPlatform.linux;
+        case 'darwin':
+            return UserPlatform.macos;
+        case 'win32':
+            return UserPlatform.windows;
+        default:
+            return UserPlatform.web;
+    }
 }
