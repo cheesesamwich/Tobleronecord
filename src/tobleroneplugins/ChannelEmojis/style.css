@@ -11,6 +11,7 @@
     border-radius: 50vh;
     height: 27px;
     width: 27px;
+    min-width: 27px;
     display: flex;
     align-items: center;
     justify-content: center;
