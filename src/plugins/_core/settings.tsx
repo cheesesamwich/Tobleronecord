@@ -19,6 +19,7 @@
 import { Settings } from "@api/Settings";
 import BackupAndRestoreTab from "@components/VencordSettings/BackupAndRestoreTab";
 import CloudTab from "@components/VencordSettings/CloudTab";
+import NewsTabs from "@components/VencordSettings/NewsTabs";
 import PatchHelperTab from "@components/VencordSettings/PatchHelperTab";
 import PluginsTab from "@components/VencordSettings/PluginsTab";
 import ThemesTab from "@components/VencordSettings/ThemesTab";
@@ -86,6 +87,12 @@ export default definePlugin({
                 section: SectionTypes.HEADER,
                 label: "Toblerone",
                 className: "vc-settings-header"
+            },
+            {
+                section: "VencordNews",
+                label: "News",
+                className: "vc-settings-news",
+                element: NewsTabs
             },
             {
                 section: "VencordSettings",
