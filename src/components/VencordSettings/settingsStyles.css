@@ -62,10 +62,3 @@
 .vc-updater-modal-close-button {
     float: right;
 }
-
-.vc-toblerone-news
-{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
