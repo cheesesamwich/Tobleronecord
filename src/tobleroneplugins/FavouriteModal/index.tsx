@@ -1,12 +1,24 @@
 import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
+import definePlugin, { OptionType } from "@utils/types";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { Text, UserSettingsActionCreators, useState } from "@webpack/common";
 import { classNameFactory, disableStyle, enableStyle } from "@api/Styles";
 import style from "./style.css?managed";
 import { insertTextIntoChatInputBox } from "@utils/discord";
+import { definePluginSettings } from "@api/Settings";
 
 const cl = classNameFactory("vc-favouritemodal-");
+
+
+const settings = definePluginSettings(
+{
+    sliceCount: {
+        type: OptionType.NUMBER,
+        description: "How many gifs to display on one page",
+        restartNeeded: false,
+        default: 10
+    }
+});
 
 interface Gif {
     format: any;
@@ -45,7 +57,7 @@ function GifModal(props: ModalProps) {
     const initialGifs = Object.values(UserSettingsActionCreators.FrecencyUserSettingsActionCreators.getCurrentValue().favoriteGifs.gifs) as Gif[];
     const [gifs, setGifs] = useState<Gif[]>(initialGifs.filter(gif => !gif.null));
 
-    const gifPages = splitArray(gifs, 10);
+    const gifPages = splitArray(gifs, settings.store.sliceCount);
     const [page, setPage] = useState(0);
 
     const handleImageError = (src: string) => {
@@ -93,6 +105,7 @@ export default definePlugin({
     authors: [
         Devs.Samwich
     ],
+    settings,
     start() {
         enableStyle(style);
     },
