@@ -1,6 +1,6 @@
 # Tobleronecord
 ## A vencord fork focused on quality of life features and more plugins
-## Notice: This fork is not actively maintained or vetted, and usually i no longer have an interest in publishing plugins
+## Notice: This fork is not actively maintained or vetted, and usually i no longer have an interest in publishing plugins (due to lack of ideas, mainly)
 
 ## Features
 
